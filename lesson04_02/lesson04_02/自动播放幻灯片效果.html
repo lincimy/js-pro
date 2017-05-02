@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>自动播放——幻灯片效果</title>
+<style>
+body,div,ul,li{margin:0;padding:0;}
+ul{list-style-type:none;}
+body{background:#000;text-align:center;font:12px/20px Arial;}
+#box{position:relative;width:492px;height:172px;background:#fff;border-radius:5px;border:8px solid #fff;margin:10px auto;}
+#box .list{position:relative;width:490px;height:170px;overflow:hidden;border:1px solid #ccc;}
+#box .list li{position:absolute;top:0;left:0;width:490px;height:170px;opacity:0;filter:alpha(opacity=0);}
+#box .list li.current{opacity:1;filter:alpha(opacity=100);}
+#box .count{position:absolute;right:0;bottom:5px;}
+#box .count li{color:#fff;float:left;width:20px;height:20px;cursor:pointer;margin-right:5px;overflow:hidden;background:#F90;opacity:0.7;filter:alpha(opacity=70);border-radius:20px;}
+#box .count li.current{color:#fff;opacity:1;filter:alpha(opacity=100);font-weight:700;background:#f60;}
+#tmp{width:100px;height:100px;background:red;position:absolute;}
+</style>
+</head>
+<body>
+
+<!-- 官方做的是渐隐效果(控制opacity)，如果做平滑移动效果也可以 -->
+
+<div id="box">
+    <ul class="list">
+        <li><img src="img/01.jpg" width="490" height="170" /></li>
+        <li><img src="img/02.jpg" width="490" height="170" /></li>
+        <li><img src="img/03.jpg" width="490" height="170" /></li>
+        <li><img src="img/04.jpg" width="490" height="170" /></li>
+        <li><img src="img/05.jpg" width="490" height="170" /></li>
+    </ul>
+    <ul class="count">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+    </ul>
+</div>
+
+<script>
+    var listUl = document.getElementsByClassName('list')[0];
+    var pics = listUl.getElementsByTagName('li');
+    var countUl = document.getElementsByClassName('count')[0];
+    var counts = countUl.getElementsByTagName('li');
+
+    //查找是否存在指定类名
+    function hasClass(elem,className){
+        return (elem.className === className);
+    }
+
+    //添加类名
+    function addClass(elem,newCls){
+        if(!hasClass(elem,newCls)){
+            elem.className = newCls;
+        }
+    }
+
+    //删除类名
+    function deleteClass(elem,oldCls){
+        if(hasClass(elem,oldCls)){
+            elem.className = '';
+        }
+    }
+
+    //动态显示图片
+    var showTimer = null;
+    function showPic(showImg){
+        showTimer = setInterval(function(){
+            var alpha = showImg.style.opacity * 100;
+            if(alpha >= 100){
+                clearInterval(showTimer);
+            }else{
+                alpha = (alpha + 4) > 100? 100 : (alpha + 4);
+                showImg.style.opacity = alpha / 100;
+                showImg.style.filter = 'alpha(opacity=' + alpha + ')';
+            }
+        },40);
+    }
+
+    //隐藏图片
+    function hidePic(hideImg){
+        clearInterval(showTimer);
+        hideImg.style = '';
+    }
+
+    //根据元素获取元素在数组列表中的下标位置
+    function getIndexOfItem(li){
+        for(var i=0;i<counts.length;i++){
+            if(counts[i]===li)
+                return i;
+        }
+        return -1;
+    }
+
+    //自动播放幻灯片
+    var tranTimer = null;
+    function autoPlay(){
+        tranTimer = setInterval(function () {
+            var currentLi = countUl.getElementsByClassName('current')[0];
+            var nowIndex = getIndexOfItem(currentLi);
+            var nextIndex = (nowIndex + 1) % counts.length;
+            hidePic(pics[nowIndex]);
+            deleteClass(counts[nowIndex],'current');
+            showPic(pics[nextIndex]);
+            addClass(counts[nextIndex],'current');
+        },2000);
+    }
+
+    //停止自动播放幻灯片
+    function stopPlay(){
+        var currentLi = countUl.getElementsByClassName('current')[0];
+        var nowIndex = getIndexOfItem(currentLi);
+        hidePic(pics[nowIndex]);
+        deleteClass(counts[nowIndex],'current');
+        clearInterval(tranTimer);
+    }
+
+    //初始播放幻灯片
+    function initPlay(){
+        showPic(pics[0]);
+        addClass(counts[0],'current');
+        autoPlay();
+    }
+    initPlay();
+
+    for(var j=0;j<counts.length;j++){
+        counts[j].index = j;
+        counts[j].onmouseover = function(){
+            stopPlay();
+            showPic(pics[this.index]);
+            addClass(this,'current');
+        };
+        counts[j].onmouseout = function(){
+            autoPlay();
+        };
+    }
+</script>
+</body>
+
+</html>
