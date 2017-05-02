@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>数组练习：各种数组方法的使用</title>
+<style>
+div{color:green;padding:10px 15px;margin:12px 0;background:#f0f0f0;border:1px dotted #333;font:12px/1.5 Courier New;word-wrap:break-word;}
+</style>
+
+</head>
+<body>
+<div>January(1),February(2),March(3),April(4),May(5),June(6),July(7),Aguest(8),September(9),October(10),November(11),December(12)</div>
+<input value="删除January(1)" type="button">
+<input value="删除December(12)" type="button">
+<div>0,1,2,3,4,5,6,7,8,9</div>
+<input value="复制" type="button">
+<input value="还原" type="button">
+<div>red,green,blue,white,yellow,black,brown</div>
+<input value="还原" type="button">
+<input value="删除前三项" type="button">
+<input value="删除第二至三项" type="button">
+<input value="在第二项后插入(orange, purple)" type="button">
+<input value="替换第二项和第三项" type="button">
+
+<script>
+    window.onload = function(){
+        var btns = document.getElementsByTagName('input');
+        var divs = document.getElementsByTagName('div');
+
+        //删除月份元素函数
+        function deleteMonth(searchStr,elem){
+            var newStr = elem.innerHTML;
+            var monthsArr = newStr.split(',');
+            var index = monthsArr.indexOf(searchStr);
+            if(index>-1){
+                monthsArr.splice(index,1);
+                newStr = monthsArr.join(',');
+            }
+            return newStr;
+        }
+
+        //删除January(1)函数
+        btns[0].onclick = function(){
+            divs[0].innerHTML = deleteMonth('January(1)',divs[0]);
+        };
+
+        //删除December(12)函数
+        btns[1].onclick = function(){
+            divs[0].innerHTML = deleteMonth('December(12)',divs[0]);
+        };
+
+        var oldNumArr = divs[1].innerHTML.split(',');
+        //数字数组的复制函数
+        function copy(currentArr,copyArr){
+            var newArr = currentArr.concat(copyArr);
+            var newStr = newArr.join(',');
+            return newStr;
+        }
+        btns[2].onclick = function(){
+            var currArr = divs[1].innerHTML.split(',');
+            divs[1].innerHTML = copy(currArr,currArr);
+        };
+
+        //数字数组的还原函数
+        btns[3].onclick = function(){
+            divs[1].innerHTML = oldNumArr.join(',');
+        };
+
+        var oldColorArr = divs[2].innerHTML.split(',');
+        //颜色数组的还原函数
+        btns[4].onclick = function(){
+            divs[2].innerHTML = oldColorArr.join(',');
+        };
+        //删除指定项
+        function deleteItem(elem,start,num){
+            var str = elem.innerHTML;
+            var arr = str .split(',');
+            if(arr.length >= (start+num)){
+                arr.splice(start,num);
+                str = arr.join(',');
+            }
+            return str;
+        }
+        //删除前三项
+        btns[5].onclick = function(){
+            divs[2].innerHTML = deleteItem(divs[2],0,3);
+        };
+        //删除第二至三项
+        btns[6].onclick = function(){
+            divs[2].innerHTML = deleteItem(divs[2],1,2);
+        };
+
+        //插入指定项
+        function addItem(elem,start,insertArr){
+            var str = elem.innerHTML;
+            var arr = str .split(',');
+            if(arr.length >= start){
+                arr.splice(start,0,insertArr);
+                str = arr.join(',');
+            }
+            return str;
+        }
+        //在第二项后插入(orange, purple)
+        btns[7].onclick = function(){
+            divs[2].innerHTML = addItem(divs[2],2,['orange', 'purple']);
+        };
+
+        //替换指定项
+        function replaceItem(elem,start,num,reArr){
+            var str = elem.innerHTML;
+            var arr = str .split(',');
+            if(arr.length >= (start+num)){
+                arr.splice(start,num,reArr);
+                str = arr.join(',');
+            }
+            return str;
+        }
+        //替换第二项和第三项
+        btns[8].onclick = function(){
+            divs[2].innerHTML = replaceItem(divs[2],1,2,['pink', 'grey']);
+        };
+    }
+</script>
+</body>
+</html>
