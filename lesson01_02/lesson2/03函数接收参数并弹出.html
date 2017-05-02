@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>函数接收参数并弹出</title>
+<style>
+body{font:12px/1.5 Tahoma;text-align:center;}
+code,input,button{font-family:inherit;}
+input{border:1px solid #ccc;padding:3px;}
+button{cursor:pointer;}
+</style>
+</head>
+<body>
+<p><input value="北京市" type="text"></p>
+<p><input value="朝阳区" type="text"></p>
+<p><button>传参</button></p>
+
+<script>
+    function alertParams(textArr){
+        for(var i=0;i<textArr.length;i++)
+            alert(textArr[i]);
+    }
+    window.onload = function(){
+        var btn = document.getElementsByTagName("button")[0];
+        var inputs = document.getElementsByTagName("input");
+
+        btn.onclick = function(){
+            var valueArr = [];
+            for(var i=0;i<inputs.length;i++)
+                valueArr.push(inputs[i].value);
+            alertParams(valueArr);
+        };
+    };
+</script>
+</body>
+</html>
